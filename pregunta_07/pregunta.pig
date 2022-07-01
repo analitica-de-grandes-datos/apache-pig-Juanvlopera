@@ -14,3 +14,7 @@ $ pig -x local -f pregunta.pig
 
         >>> Escriba su respuesta a partir de este punto <<<
 */
+info = LOAD 'data.tsv' USING PigStorage('\t') AS (Mayus:chararray,lower:bag{A:tuple(B:chararray)},lowers:map[]);
+letras = FOREACH info GENERATE Mayus, SIZE(lower) AS nlower, SIZE(lowers) AS nlowers;
+ordered = ORDER letras BY Mayus,nlower,nlowers;
+STORE ordered INTO 'output' USING PigStorage(',');
