@@ -16,4 +16,8 @@ $ pig -x local -f pregunta.pig
 
         >>> Escriba su respuesta a partir de este punto <<<
 */
-
+info = LOAD 'data.tsv' USING PigStorage('\t') AS (Mayus:chararray,lower:bag{A:tuple(B:chararray)},lowers:map[]);
+info2 = FOREACH info GENERATE FLATTEN (lower) as letra, FLATTEN (lowers) as letras;
+grouped = GROUP info2 BY (letra,letras);
+letracount = FOREACH grouped GENERATE group,COUNT(info2);
+STORE letracount INTO 'output' USING PigStorage(',');
